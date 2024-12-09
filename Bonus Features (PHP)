@@ -1,0 +1,21 @@
+public function deleteReservation($reservationId) {
+    $sql = "DELETE FROM Reservations WHERE reservationId = :reservationId";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':reservationId', $reservationId);
+    $stmt->execute();
+}
+
+
+
+public function searchPreferences($customerId) {
+    $sql = "SELECT * FROM DiningPreferences WHERE customerId = :customerId";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':customerId', $customerId);
+    $stmt->execute();
+    return $stmt->fetch();
+}
+
+
+
+
+
