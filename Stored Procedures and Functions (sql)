@@ -1,0 +1,48 @@
+DELIMITER $$
+
+CREATE PROCEDURE findReservations(IN customerId INT)
+BEGIN
+    SELECT * FROM Reservations WHERE customerId = customerId;
+END $$
+
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE addSpecialRequest(IN reservationId INT, IN requests VARCHAR(200))
+BEGIN
+    UPDATE Reservations SET specialRequests = requests WHERE reservationId = reservationId;
+END $$
+
+DELIMITER ;
+
+
+
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE addReservation(IN customerName VARCHAR(45), IN contactInfo VARCHAR(200),
+                                 IN reservationTime DATETIME, IN numberOfGuests INT, IN specialRequests VARCHAR(200))
+BEGIN
+    DECLARE existingCustomerId INT;
+    
+    SELECT customerId INTO existingCustomerId FROM Customers WHERE customerName = customerName AND contactInfo = contactInfo;
+    
+    IF existingCustomerId IS NULL THEN
+
+        INSERT INTO Customers (customerName, contactInfo) VALUES (customerName, contactInfo);
+        SET existingCustomerId = LAST_INSERT_ID();
+    END IF;
+    
+    INSERT INTO Reservations (customerId, reservationTime, numberOfGuests, specialRequests) 
+    VALUES (existingCustomerId, reservationTime, numberOfGuests, specialRequests);
+END $$
+
+DELIMITER ;
+
+
