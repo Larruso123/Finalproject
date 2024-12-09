@@ -1,0 +1,59 @@
+<?php
+$host = 'localhost';
+$dbname = 'restaurant_reservations';
+$username = 'root'; 
+$password = 'Larruso25';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+}
+?>
+
+
+
+
+public function addReservation($customerName, $contactInfo, $reservationTime, $numberOfGuests, $specialRequests) {
+    $sql = "CALL addReservation(:customerName, :contactInfo, :reservationTime, :numberOfGuests, :specialRequests)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':customerName', $customerName);
+    $stmt->bindParam(':contactInfo', $contactInfo);
+    $stmt->bindParam(':reservationTime', $reservationTime);
+    $stmt->bindParam(':numberOfGuests', $numberOfGuests);
+    $stmt->bindParam(':specialRequests', $specialRequests);
+    $stmt->execute();
+}
+
+
+
+public function addCustomer($customerName, $contactInfo) {
+    $sql = "INSERT INTO Customers (customerName, contactInfo) VALUES (:customerName, :contactInfo)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':customerName', $customerName);
+    $stmt->bindParam(':contactInfo', $contactInfo);
+    $stmt->execute();
+}
+
+
+
+
+public function viewReservations($customerId) {
+    $sql = "SELECT * FROM Reservations WHERE customerId = :customerId";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':customerId', $customerId);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+
+
+
+public function getCustomerPreferences($customerId) {
+    $sql = "SELECT * FROM DiningPreferences WHERE customerId = :customerId";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':customerId', $customerId);
+    $stmt->execute();
+    return $stmt->fetch();
+}
